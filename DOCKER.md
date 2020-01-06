@@ -34,7 +34,7 @@ npm-debug.log
 Now build your image:
 
 ```
-docker build -t bomaidea/smapi
+docker build -t bomaidea/smapi .
 ```
 
 Then check that the images has been created correctly:
