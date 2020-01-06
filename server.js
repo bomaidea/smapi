@@ -6,13 +6,13 @@ const bodyParser = require('body-parser');
 
 const transporter = nodemailer.createTransport({
 
-  host: 'smtp.gmail.com',
-  provider: 'gmail',
+  host: 'smtp.server.com',
+  provider: 'server_provider',
   port: 465,
   secure: true,
   auth: {
-    user: ' ', // Enter here email address from which you want to send emails
-    pass: ' ' // Enter here password for email account from which you want to send emails
+    user: '', // Enter here email address from which you want to send emails
+    pass: '' // Enter here password for email account from which you want to send emails
   },
   tls: {
   rejectUnauthorized: false
@@ -30,21 +30,21 @@ app.use(function (req, res, next) {
 
 app.post('/send', function (req, res) {
 
-  let senderName = req.body.contactFormName;
-  let senderEmail = req.body.contactFormEmail;
-  let messageSubject = req.body.contactFormSubjects;
-  let messageText = req.body.contactFormMessage;
-  let copyToSender = req.body.contactFormCopy;
+  let from = req.body.from;
+  let subject = req.body.subject;
+  let message = req.body.message;
 
   let mailOptions = {
-    to: [' '], // Enter here the email address on which you want to send emails from your customers
-    from: senderName,
-    subject: messageSubject,
-    text: messageText,
-    replyTo: senderEmail
+    to: [''], // Enter here the email address on which you want to send emails from your customers
+    from: from,
+    subject: subject,
+    text: message,
+    replyTo: from
   };
 
-  if (senderName === '') {
+	console.log(mailOptions);
+
+  if (from === '') {
     res.status(400);
     res.send({
     message: 'Bad request'
@@ -52,7 +52,7 @@ app.post('/send', function (req, res) {
     return;
   }
 
-  if (senderEmail === '') {
+  if (subject === '') {
     res.status(400);
     res.send({
     message: 'Bad request'
@@ -60,7 +60,7 @@ app.post('/send', function (req, res) {
     return;
   }
 
-  if (messageSubject === '') {
+  if (message === '') {
     res.status(400);
     res.send({
     message: 'Bad request'
@@ -68,16 +68,8 @@ app.post('/send', function (req, res) {
     return;
   }
 
-  if (messageText === '') {
-    res.status(400);
-    res.send({
-    message: 'Bad request'
-    });
-    return;
-  }
-
-  if (copyToSender) {
-    mailOptions.to.push(senderEmail);
+  if (from) {
+    mailOptions.to.push(from);
   }
 
   transporter.sendMail(mailOptions, function (error, response) {
