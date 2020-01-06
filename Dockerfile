@@ -4,7 +4,7 @@ FROM node:10
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package*.json ./package.json
+COPY package*.json ./
 RUN npm install
 # following line only for production
 # RUN npm ci --only=production
