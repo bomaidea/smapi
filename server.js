@@ -42,8 +42,6 @@ app.post('/send', function (req, res) {
     replyTo: from
   };
 
-	console.log(mailOptions);
-
   if (from === '') {
     res.status(400);
     res.send({
