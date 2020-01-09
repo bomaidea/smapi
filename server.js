@@ -4,15 +4,21 @@ const app = express();
 const port = 3000;
 const bodyParser = require('body-parser');
 
+const host = process.env.host;
+const provider = process.env.provider;
+const user = process.env.user;
+const pass = process.env.pass;
+const to = process.env.to;
+
 const transporter = nodemailer.createTransport({
 
-  host: 'smtp.server.com',
-  provider: 'server_provider',
+  host: host,
+  provider: provider,
   port: 465,
   secure: true,
   auth: {
-    user: '', // Enter here email address from which you want to send emails
-    pass: '' // Enter here password for email account from which you want to send emails
+    user: user, // Enter here email address from which you want to send emails
+    pass: pass // Enter here password for email account from which you want to send emails
   },
   tls: {
   rejectUnauthorized: false
@@ -35,7 +41,7 @@ app.post('/send', function (req, res) {
   let message = req.body.message;
 
   let mailOptions = {
-    to: [''], // Enter here the email address on which you want to send emails from your customers
+    to: [to], // Enter here the email address on which you want to send emails from your customers
     from: from,
     subject: subject,
     text: message,
