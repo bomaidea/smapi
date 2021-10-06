@@ -27,14 +27,14 @@ const transporter = nodemailer.createTransport({
 
 app.use(bodyParser.json());
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
 
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
-app.post('/send', function (req, res) {
+app.post('/send', async (req, res) => {
 
   let from = req.body.from;
   let subject = req.body.subject;
@@ -76,15 +76,15 @@ app.post('/send', function (req, res) {
     mailOptions.to.push(from);
   }
 
-  transporter.sendMail(mailOptions, function (error, response) {
+  await transporter.sendMail(mailOptions, (error, response) => {
     if (error) {
-      res.end({messsage:'Error while sending email.'});
+      res.send({messsage:'Error while sending email.'});
     } else {
-      res.end({message:'Successfully sent email.'});
+      res.send({message:'Successfully sent email.'});
     }
   });
 });
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log('Express started on port: ', port);
 });
