@@ -1,0 +1,14 @@
+version: "3"
+services:
+  smapi:
+    image: .
+    container_name: ivansmapi
+    restart: always
+    environment:
+      host: smtp.example.com
+      provider: smtp.example.com
+      user: sender@example.com
+      pass: password
+      to: receiver@example.com
+    ports:
+      - 3000:3000
