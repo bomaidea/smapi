@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
     pass: pass // Enter here password for email account from which you want to send emails
   },
   tls: {
-  rejectUnauthorized: false
+    rejectUnauthorized: false
   }
 });
 
@@ -36,9 +36,27 @@ app.use((req, res, next) => {
 
 app.post('/send', async (req, res) => {
 
-  let from = req.body.from;
-  let subject = req.body.subject;
-  let message = req.body.message;
+  let from = user;
+  let subject = 'portfolio request from ivansokolov.ch';
+  let locale = req.body.locale;
+  let email = req.body.email;
+  const message = email + ' has requested a portfolio via ivansokolov.ch website language:' + locale;
+
+  if (locale === '' || locale == null) {
+    res.status(400);
+    res.send({
+      message: 'Bad request',
+    });
+    return;
+  }
+
+  if (email === '' || email == null) {
+    res.status(400);
+    res.send({
+      message: 'Bad request'
+    });
+    return;
+  }
 
   let mailOptions = {
     to: [to], // Enter here the email address on which you want to send emails from your customers
@@ -48,30 +66,14 @@ app.post('/send', async (req, res) => {
     replyTo: from
   };
 
-  if (from === '') {
-    res.status(400);
-    res.send({
-    message: 'Bad request'
-    });
-    return;
-  }
-
-  if (subject === '') {
-    res.status(400);
-    res.send({
-    message: 'Bad request'
-    });
-    return;
-  }
-
-  if (message === '') {
-    res.status(400);
-    res.send({
-    message: 'Bad request'
-    });
-    return;
-  }
-
+  const confirmMessage = (locale==="it"?"Abbiamo ricevuto la tua richiesta di portfolio, riceverai il portfolio nei prossimi giorni su: ":"We received your portforlio request, you will receive the portfolio in the next days in your mailbox: ") + email + "\n\nIvan Sokolov"
+  let confirmEmailOptions = {
+    to: [email],
+    from: from,
+    subject: locale==="it"?"Abbiamo ricevuto la tua richiesta di portfolio":"We have received your portfolio request",
+    text: confirmMessage,
+    replyTo: from,
+  };
   if (from) {
     mailOptions.to.push(from);
   }
@@ -81,6 +83,13 @@ app.post('/send', async (req, res) => {
       res.send({messsage:'Error while sending email.'});
     } else {
       res.send({message:'Successfully sent email.'});
+      confirmEmailOptions.to.push(from);
+      transporter.sendMail(confirmEmailOptions, (error, response) => {
+        if (error) {
+          console.log("Error sending confirmation email");
+        } else {
+        }
+      });
     }
   });
 });
