@@ -1,7 +1,8 @@
 version: "3"
 services:
   smapi:
-    image: .
+    build:
+      context: .
     container_name: ivansmapi
     restart: always
     environment:
@@ -12,3 +13,4 @@ services:
       to: receiver@example.com
     ports:
       - 3000:3000
+
